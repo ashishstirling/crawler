@@ -7,6 +7,12 @@ Date: 23-Apr-2021
 package com.company.services;
 
 import com.company.models.URLStore;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.util.HashSet;
 
 public class Crawler {
 
@@ -28,6 +34,37 @@ public class Crawler {
 
             // Output this URL
             System.out.println("-".repeat(level) + url);
+
+            try {
+
+                // Fetch URL content
+                Document document = Jsoup.connect(url).get();
+
+                // Get list of image elements on the page
+                Elements imagesOnPage = document.select("img[src]");
+
+                // Print this list of images
+                imagesOnPage.forEach(image -> System.out.println("-".repeat(level + 1)
+                        + " [IMAGE] "
+                        + image.attr("abs:src")));
+
+                // Get list of script elements on the page
+                Elements scriptsOnPage = document.select("script[src]");
+
+                // Print this list of scripts
+                scriptsOnPage.forEach(script -> System.out.println("-".repeat(level + 1)
+                        + " [SCRIPT] "
+                        + script.attr("abs:src")));
+
+                // Get list of anchor tags (links) on the page
+                Elements anchorsOnPage = document.select("a[href]");
+
+                // Create a HashSet to store Child URLs of this page
+                HashSet<String> childURLs = new HashSet<>();
+
+            } catch (IOException e) {
+                System.err.println("-".repeat(level) + url + e.getMessage());
+            }
 
         }
 
