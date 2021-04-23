@@ -1,5 +1,5 @@
 /*
-Class URLStoreTest: This class tests URLStore functionality
+Class TestURLStore: This class tests URLStore functionality
 Author: Ashish Kulkarni
 Date: 23-Apr-2021
  */
