@@ -19,7 +19,9 @@ public class Main {
         Crawler crawler = new Crawler();
 
         // Initiate crawling
+        System.out.println("Crawling URL https://wiprodigital.com/ for domain https://wiprodigital.com");
         crawler.crawl("https://wiprodigital.com", "https://wiprodigital.com/", 0, urlStore);
+        System.out.println("Crawling finished");
     }
 
 }
