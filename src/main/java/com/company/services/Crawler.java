@@ -29,8 +29,10 @@ public class Crawler {
         // If we don't do this check, we could end up in an infinite loop
         if (!urlStore.getVisited().contains(url)) {
 
-            // Add this URL to list of visited URLs
+            // Add this URL to set of visited URLs
             urlStore.getVisited().add(url);
+            // Remove this URL from set of yet to visit URLs
+            urlStore.getYetToVisit().remove(url);
 
             // Output this URL
             System.out.println("-".repeat(level) + url);
@@ -61,6 +63,30 @@ public class Crawler {
 
                 // Create a HashSet to store Child URLs of this page
                 HashSet<String> childURLs = new HashSet<>();
+
+                // Traverse all the anchors on the page
+                anchorsOnPage.forEach(anchor -> {
+                    String link = anchor.attr("abs:href");
+                    if (!urlStore.getVisited().contains(link)
+                            && !urlStore.getYetToVisit().contains(link)
+                            && !childURLs.contains(link)) {
+                        urlStore.getYetToVisit().add(link);
+                        childURLs.add(link);
+                    }
+                });
+
+                // For each child URL, check if it is from the domain we are crawling
+                // If it is from same domain, crawl that child URL
+                // Else, display it as EXTERNAL URL
+
+                childURLs.forEach(childURL -> {
+                    if (childURL.startsWith(domain)) {
+                        crawl(domain, childURL, level + 1, urlStore);
+                    } else {
+                        System.out.println("-".repeat(level + 1) + " [EXTERNAL URL] " + childURL);
+                        urlStore.getYetToVisit().remove(childURL);
+                    }
+                });
 
             } catch (IOException e) {
                 System.err.println("-".repeat(level) + url + e.getMessage());
